@@ -209,6 +209,7 @@ func save(pkgs []string) error {
 	// starting at the project's root. For example,
 	//   godep go list ./...
 	srcdir := filepath.FromSlash(strings.Trim(sep, "/"))
+	/*
 	rem := subDeps(gold.Deps, gnew.Deps)
 	ppln(rem)
 	add := subDeps(gnew.Deps, gold.Deps)
@@ -235,6 +236,17 @@ func save(pkgs []string) error {
 			return err
 		}
 	}
+	*/
+	//每次都删除目录，然后重新写入
+	err = os.RemoveAll(srcdir)
+	if err != nil && !os.IsNotExist(err) {
+		return err 
+	}
+	err = copySrc(srcdir, gnew.Deps)
+	if err != nil {
+		return err
+	}
+
 	if !VendorExperiment {
 		f, _ := filepath.Split(srcdir)
 		writeVCSIgnore(f)
